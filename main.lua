@@ -1,5 +1,23 @@
 log.info("Successfully loaded " .. _ENV["!guid"] .. ".")
+local envy = mods["MGReturns-ENVY"]
+envy.auto()
 mods["RoRRModdingToolkit-RoRR_Modding_Toolkit"].auto(true)
+
+require("./RunArtifacts")
+
+-- ========== ENVY Setup ==========
+
+function public.setup(env)
+    if env == nil then
+        env = envy.getfenv(2)
+    end
+    local wrapper = {}
+    for k, v in pairs(RunArtifacts) do
+        wrapper[k] = v
+    end
+    return wrapper
+end
+
 mods.on_all_mods_loaded(function()
     for k, v in pairs(mods) do
         if type(v) == "table" and v.tomlfuncs then
@@ -12,8 +30,8 @@ mods.on_all_mods_loaded(function()
     params = Toml.config_update(_ENV["!guid"], params) -- Load Save
 end)
 
+ActiveArti = {}
 Initialize(function()
-    local ActiveArti = {}
     local spiritStatHandler = Item.new("OnyxMidrunArtifacts", "spiritStatHandler", true)
     local ArtifactPacket = Packet.new()
     spiritStatHandler.is_hidden = true
@@ -67,6 +85,33 @@ Initialize(function()
         end
     end
 
+    function DisableArtifact(Artifact)
+        if Artifact[2] == "spirit" and gm.bool(Artifact[9]) then
+            local allies = Instance.find_all(gm.constants.pFriend)
+            for i, ally in ipairs(allies) do
+                ally:item_remove(spiritStatHandler)
+            end
+        end
+        if Artifact[2] == "glass" and gm.bool(Artifact[9]) then
+            local allies = Instance.find_all(gm.constants.pFriend)
+            for i, ally in ipairs(allies) do
+                if ally.player_p_number ~= nil and ally.player_p_number > 0 then
+                    ally:item_remove(Item.find("ror", "glassStatHandler"))
+                    ally:item_give(Item.find("ror", "glassStatHandler"))
+                end
+            end
+        end
+        if Artifact[2] == "enigma" and gm.bool(Artifact[9]) then
+            local allies = Instance.find_all(gm.constants.pFriend)
+            for i, ally in ipairs(allies) do
+                if ally.player_p_number ~= nil and ally.player_p_number > 0 then
+                    GM.equipment_set(ally, Equipment.find("ror", "artifactOfEnigma"))
+                end
+            end
+        end
+        Artifact[9] = false
+    end
+
     local function NetworkArtifact(Artifact)
         if gm._mod_net_isOnline() then
             local msg = ArtifactPacket:message_begin()
@@ -95,6 +140,7 @@ Initialize(function()
         function(self, other, result, args)
             if other ~= nil and other.artifact_id ~= nil then
                 local Artifact = Global.class_artifact[other.artifact_id + 1]
+                ActiveArti[Artifact[1].."-"..Artifact[2]] = true
                 NetworkArtifact(Artifact)
             end
         end)
@@ -117,8 +163,10 @@ Initialize(function()
 
     gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
         if ActiveArti["ror-kin"] then
+            log.warning("searching")
             for _, Artifact in ipairs(Global.class_artifact) do
                 if Artifact ~= 0 and Artifact[2] == "kin" then
+                    log.warning("found")
                     Artifact[9] = true
                 end
             end
