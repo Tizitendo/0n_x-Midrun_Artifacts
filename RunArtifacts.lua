@@ -5,7 +5,6 @@ RunArtifacts.remove = function(Artifact)
     table.insert(RemoveArtifacts, Artifact)
     local RemoveArtifact = Item.find("OnyxMidrunArtifacts", Artifact[2])
     Player.get_client():item_remove(RemoveArtifact)
-    log.warning(Artifact[2])
     ActiveArti[Artifact[1].."-"..Artifact[2]] = false
 end
 

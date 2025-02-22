@@ -163,10 +163,8 @@ Initialize(function()
 
     gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
         if ActiveArti["ror-kin"] then
-            log.warning("searching")
             for _, Artifact in ipairs(Global.class_artifact) do
                 if Artifact ~= 0 and Artifact[2] == "kin" then
-                    log.warning("found")
                     Artifact[9] = true
                 end
             end
