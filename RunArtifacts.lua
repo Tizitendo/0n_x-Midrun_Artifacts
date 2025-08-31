@@ -16,5 +16,5 @@ gm.pre_script_hook(gm.constants.stage_goto, function(self, other, result, args)
 end)
 
 RunArtifacts.activate = function(ArtifactID)
-    
+    SetArtifactActive(Global.class_artifact[ArtifactID])
 end

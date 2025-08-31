@@ -1,6 +1,6 @@
 {
 	"name": "MidrunArtifacts",
-	"version_number": "1.0.1",
+	"version_number": "1.0.2",
 	"website_url": "https://github.com/Tizitendo/Onyx-Midrun_Artifacts",
 	"description": "Collecting Artifacts will activate them in the same run",
 	"dependencies": [

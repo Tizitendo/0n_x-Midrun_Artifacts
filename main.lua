@@ -47,7 +47,7 @@ Initialize(function()
         end
     end
 
-    local function SetArtifactActive(Artifact)
+    function SetArtifactActive(Artifact)
         if Artifact[2] == "spirit" and not gm.bool(Artifact[9]) then
             local allies = Instance.find_all(gm.constants.pFriend)
             for i, ally in ipairs(allies) do
@@ -136,7 +136,8 @@ Initialize(function()
         SetArtifactActive(Artifact)
     end)
 
-    gm.post_script_hook(gm.constants.add_item_pickup_display_for_player_gml_Object_oHUD_Create_0,
+    gm.post_script_hook(gm.constants["add_item_pickup_display_for_player@gml_Object_oHUD_Create_0"],
+    -- gm.post_script_hook(gm.constants.add_item_pickup_display_for_player_gml_Object_oHUD_Create_0,
         function(self, other, result, args)
             if other ~= nil and other.artifact_id ~= nil then
                 local Artifact = Global.class_artifact[other.artifact_id + 1]
