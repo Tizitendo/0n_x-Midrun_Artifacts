@@ -137,7 +137,6 @@ Initialize(function()
     end)
 
     gm.post_script_hook(gm.constants["add_item_pickup_display_for_player@gml_Object_oHUD_Create_0"],
-    -- gm.post_script_hook(gm.constants.add_item_pickup_display_for_player_gml_Object_oHUD_Create_0,
         function(self, other, result, args)
             if other ~= nil and other.artifact_id ~= nil then
                 local Artifact = Global.class_artifact[other.artifact_id + 1]
